@@ -4,6 +4,8 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import List.Extra exposing (lift2)
+import List exposing (..)
+import Tuple exposing (..)
 
 
 type alias Model =
@@ -47,32 +49,32 @@ update msg model =
 generateEdges : Int -> List Edge
 generateEdges dimension =
     generateDots dimension
-        |> List.foldl
+        |> foldl
             (\dot edges ->
                 dot => getBottomDot dot :: dot => getRightDot dot :: edges
             )
             []
-        |> List.filter (\edge -> (isInRange dimension <| Tuple.first edge) && (isInRange dimension <| Tuple.second edge))
+        |> filter (\edge -> (isInRange dimension <| first edge) && (isInRange dimension <| second edge))
 
 
 isInRange : Int -> Point -> Bool
 isInRange dimension dot =
-    Tuple.first dot <= dimension + 1 && Tuple.second dot <= dimension + 1
+    first dot <= dimension + 1 && second dot <= dimension + 1
 
 
 getRightDot : Point -> Point
 getRightDot dot =
-    (Tuple.first dot + 1) => Tuple.second dot
+    (first dot + 1) => second dot
 
 
 getBottomDot : Point -> Point
 getBottomDot dot =
-    Tuple.first dot => (Tuple.second dot + 1)
+    first dot => (second dot + 1)
 
 
 generateDots : Int -> List Point
 generateDots dimension =
-    List.Extra.lift2 (,) (List.range 1 <| dimension + 1) (List.range 1 <| dimension + 1)
+    lift2 (,) (range 1 <| dimension + 1) (range 1 <| dimension + 1)
 
 
 view : Model -> Html Msg
@@ -84,14 +86,14 @@ view model =
         , div [] <|
             List.map
                 (\dot ->
-                    Html.span
+                    span
                         [ style
                             [ "background-color" => "#3C8D2F"
                             , "width" => "5px"
                             , "height" => "5px"
                             , "position" => "absolute"
-                            , "margin-left" => ((toString (Tuple.first dot * 35)) ++ "px")
-                            , "margin-top" => ((toString (Tuple.second dot * 35)) ++ "px")
+                            , "margin-left" => (toString (first dot * 35) ++ "px")
+                            , "margin-top" => (toString (second dot * 35) ++ "px")
                             ]
                         ]
                         []
