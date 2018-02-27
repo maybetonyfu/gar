@@ -3,6 +3,7 @@ module Main exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
+import List.Extra exposing (lift2)
 
 
 type alias Model =
@@ -19,9 +20,7 @@ type Msg
 
 
 type alias Point =
-    { x : Int
-    , y : Int
-    }
+    ( Int, Int )
 
 
 init : ( Model, Cmd msg )
@@ -43,24 +42,15 @@ update msg model =
 
 -- generateEdges : Int -> List Edge
 -- generateEdges dimension =
---     List.fold (\point ->
---         if ()
+--     List.foldl (\point ->
+--         if (point.x + 1 <= dimension)
 --         ))  [] <|
 --         generateDots dimension
 
 
 generateDots : Int -> List Point
 generateDots dimension =
-    List.map (generateDot dimension) <|
-        List.range 0 <|
-            (dimension + 1)
-                ^ 2
-                - 1
-
-
-generateDot : Int -> Int -> Point
-generateDot dimension index =
-    { x = index // (dimension + 1), y = index % (dimension + 1) }
+    List.Extra.lift2 (,) (List.range 1 <| dimension + 1) (List.range 1 <| dimension + 1)
 
 
 (=>) : a -> b -> ( a, b )
@@ -77,14 +67,14 @@ view model =
         , div [] <|
             List.map
                 (\dot ->
-                    span
+                    Html.span
                         [ style
                             [ "background-color" => "#3C8D2F"
                             , "width" => "5px"
                             , "height" => "5px"
                             , "position" => "absolute"
-                            , "margin-left" => ((toString (dot.x * 35)) ++ "px")
-                            , "margin-top" => ((toString (dot.y * 35)) ++ "px")
+                            , "margin-left" => ((toString (Tuple.first dot * 35)) ++ "px")
+                            , "margin-top" => ((toString (Tuple.second dot * 35)) ++ "px")
                             ]
                         ]
                         []
