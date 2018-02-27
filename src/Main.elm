@@ -9,7 +9,7 @@ import Tuple exposing (..)
 
 
 type alias Model =
-    { dots : List Point
+    { points : List Point
     }
 
 
@@ -40,40 +40,40 @@ update msg model =
     case msg of
         Draw dimension ->
             ( { model
-                | dots = generateDots dimension
+                | points = generatePoints dimension
               }
             , Cmd.none
             )
 
 
-generateEdges : Int -> List Edge
-generateEdges dimension =
-    generateDots dimension
+generateLines : Int -> List Edge
+generateLines dimension =
+    generatePoints dimension
         |> foldl
-            (\dot edges ->
-                dot => getBottomDot dot :: dot => getRightDot dot :: edges
+            (\point edges ->
+                point => getBottomPoint point :: point => getRightPoint point :: edges
             )
             []
         |> filter (\edge -> (isInRange dimension <| first edge) && (isInRange dimension <| second edge))
 
 
 isInRange : Int -> Point -> Bool
-isInRange dimension dot =
-    first dot <= dimension + 1 && second dot <= dimension + 1
+isInRange dimension point =
+    first point <= dimension + 1 && second point <= dimension + 1
 
 
-getRightDot : Point -> Point
-getRightDot dot =
-    (first dot + 1) => second dot
+getRightPoint : Point -> Point
+getRightPoint point =
+    (first point + 1) => second point
 
 
-getBottomDot : Point -> Point
-getBottomDot dot =
-    first dot => (second dot + 1)
+getBottomPoint : Point -> Point
+getBottomPoint point =
+    first point => (second point + 1)
 
 
-generateDots : Int -> List Point
-generateDots dimension =
+generatePoints : Int -> List Point
+generatePoints dimension =
     lift2 (,) (range 1 <| dimension + 1) (range 1 <| dimension + 1)
 
 
@@ -85,20 +85,20 @@ view model =
         , hr [] []
         , div [] <|
             List.map
-                (\dot ->
+                (\point ->
                     span
                         [ style
                             [ "background-color" => "#3C8D2F"
                             , "width" => "5px"
                             , "height" => "5px"
                             , "position" => "absolute"
-                            , "margin-left" => (toString (first dot * 35) ++ "px")
-                            , "margin-top" => (toString (second dot * 35) ++ "px")
+                            , "margin-left" => (toString (first point * 35) ++ "px")
+                            , "margin-top" => (toString (second point * 35) ++ "px")
                             ]
                         ]
                         []
                 )
-                model.dots
+                model.points
         ]
 
 
