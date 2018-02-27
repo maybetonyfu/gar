@@ -23,6 +23,11 @@ type alias Point =
     ( Int, Int )
 
 
+(=>) : a -> b -> ( a, b )
+(=>) =
+    (,)
+
+
 init : ( Model, Cmd msg )
 init =
     ( Model [], Cmd.none )
@@ -39,23 +44,35 @@ update msg model =
             )
 
 
+generateEdges : Int -> List Edge
+generateEdges dimension =
+    generateDots dimension
+        |> List.foldl
+            (\dot edges ->
+                dot => getBottomDot dot :: dot => getRightDot dot :: edges
+            )
+            []
+        |> List.filter (\edge -> (isInRange dimension <| Tuple.first edge) && (isInRange dimension <| Tuple.second edge))
 
--- generateEdges : Int -> List Edge
--- generateEdges dimension =
---     List.foldl (\point ->
---         if (point.x + 1 <= dimension)
---         ))  [] <|
---         generateDots dimension
+
+isInRange : Int -> Point -> Bool
+isInRange dimension dot =
+    Tuple.first dot <= dimension + 1 && Tuple.second dot <= dimension + 1
+
+
+getRightDot : Point -> Point
+getRightDot dot =
+    (Tuple.first dot + 1) => Tuple.second dot
+
+
+getBottomDot : Point -> Point
+getBottomDot dot =
+    Tuple.first dot => (Tuple.second dot + 1)
 
 
 generateDots : Int -> List Point
 generateDots dimension =
     List.Extra.lift2 (,) (List.range 1 <| dimension + 1) (List.range 1 <| dimension + 1)
-
-
-(=>) : a -> b -> ( a, b )
-(=>) =
-    (,)
 
 
 view : Model -> Html Msg
