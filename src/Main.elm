@@ -7,10 +7,14 @@ import List.Extra exposing (lift2)
 import List exposing (..)
 import Tuple exposing (..)
 import Set
+import Svg exposing (..)
+import Svg.Attributes exposing (..)
 
 
 type alias Model =
     { points : List Point
+    , lines : List Line
+    , squares : List Square
     }
 
 
@@ -37,7 +41,7 @@ type alias Point =
 
 init : ( Model, Cmd msg )
 init =
-    ( Model [], Cmd.none )
+    ( Model [] [] [], Cmd.none )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -46,6 +50,8 @@ update msg model =
         Draw dimension ->
             ( { model
                 | points = generatePoints dimension
+                , lines = generateLines dimension
+                , squares = generateSquares dimension
               }
             , Cmd.none
             )
@@ -53,36 +59,46 @@ update msg model =
 
 generateLines : Int -> List Line
 generateLines dimension =
-    generatePoints dimension
-        |> foldl
-            (\point lines ->
-                Set.fromList [ point, getBottomPoint point ] :: Set.fromList [ point, getRightPoint point ] :: lines
-            )
-            []
-        |> filter (lineInRange (dimension))
+    let
+        maxLineCoordinate =
+            dimension
+    in
+        generatePoints dimension
+            |> foldl
+                (\point lines ->
+                    Set.fromList [ point, getBottomPoint point ]
+                        :: Set.fromList [ point, getRightPoint point ]
+                        :: lines
+                )
+                []
+            |> List.filter (lineInRange maxLineCoordinate)
 
 
 generateSquares : Int -> List Square
 generateSquares dimension =
-    generatePoints dimension
-        |> filter (pointInRange <| dimension - 1)
-        |> foldl
-            (\point squares ->
-                (Set.fromList
-                    [ point
-                    , getRightPoint point
-                    , getBottomPoint point
-                    , getBottomRightPoint point
-                    ]
+    let
+        maxTopLeftCornerCoordinate =
+            dimension - 1
+    in
+        generatePoints dimension
+            |> List.filter (pointInRange <| maxTopLeftCornerCoordinate)
+            |> foldl
+                (\point squares ->
+                    (Set.fromList
+                        [ point
+                        , getRightPoint point
+                        , getBottomPoint point
+                        , getBottomRightPoint point
+                        ]
+                    )
+                        :: squares
                 )
-                    :: squares
-            )
-            []
+                []
 
 
 pointInRange : Int -> Point -> Bool
-pointInRange dimension point =
-    first point <= dimension + 1 && second point <= dimension + 1
+pointInRange maxPoinCoordinate point =
+    first point <= maxPoinCoordinate && second point <= maxPoinCoordinate
 
 
 lineInRange : Int -> Line -> Bool
@@ -108,31 +124,29 @@ getBottomRightPoint point =
 
 generatePoints : Int -> List Point
 generatePoints dimension =
-    lift2 (,) (range 1 <| dimension + 1) (range 1 <| dimension + 1)
+    let
+        maxPointCoordinate =
+            dimension
+    in
+        lift2 (,) (range 0 maxPointCoordinate) (range 0 maxPointCoordinate)
 
 
 view : Model -> Html Msg
 view model =
     div []
-        [ button [ onClick <| Draw 3 ] [ text "3 X 3" ]
-        , button [ onClick <| Draw 4 ] [ text "4 X 4" ]
+        [ button [ onClick <| Draw 3 ] [ Html.text "3 X 3" ]
+        , button [ onClick <| Draw 4 ] [ Html.text "4 X 4" ]
         , hr [] []
-        , div [] <|
-            List.map
-                (\point ->
-                    span
-                        [ style
-                            [ "background-color" => "#3C8D2F"
-                            , "width" => "5px"
-                            , "height" => "5px"
-                            , "position" => "absolute"
-                            , "margin-left" => (toString (first point * 35) ++ "px")
-                            , "margin-top" => (toString (second point * 35) ++ "px")
-                            ]
-                        ]
-                        []
-                )
-                model.points
+        , svg
+            [ Svg.Attributes.width "500"
+            , Svg.Attributes.height "500"
+            , viewBox "0 0 120 120"
+            , fill "white"
+            , stroke "black"
+            , strokeWidth "3"
+            , Html.Attributes.style [ "padding-left" => "20px" ]
+            ]
+            []
         ]
 
 
