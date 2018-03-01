@@ -7,11 +7,11 @@ import Main exposing (..)
 
 generatePoints : Test
 generatePoints =
-    describe "Generate vertice from given dimension"
-        [ test "Generate 3 X 3 dots" <|
+    describe "Generate points from given dimension"
+        [ test "Generate 3 X 3 points" <|
             \() ->
                 Expect.equal (List.length <| Main.generatePoints 3) 16
-        , test "Generate 4 X 4 dots" <|
+        , test "Generate 4 X 4 points" <|
             \() ->
                 Expect.equal (List.length <| Main.generatePoints 4) 25
         ]
@@ -19,11 +19,11 @@ generatePoints =
 
 generateLines : Test
 generateLines =
-    describe "Generate edges from given dimension"
-        [ test "Generate 3 X 3 edges" <|
+    describe "Generate lines from given dimension"
+        [ test "Generate 3 X 3 lines" <|
             \() ->
                 Expect.equal (List.length <| Main.generateLines 3) 24
-        , test "Generate 4 X 4 edges" <|
+        , test "Generate 4 X 4 lines" <|
             \() ->
                 Expect.equal (List.length <| Main.generateLines 4) 40
         ]
@@ -32,10 +32,10 @@ generateLines =
 generateSquares : Test
 generateSquares =
     describe "Generate squares from given dimension"
-        [ test "Generate 3 X 3 edges" <|
+        [ test "Generate 3 X 3 squares" <|
             \() ->
                 Expect.equal (List.length <| Main.generateSquares 3) 9
-        , test "Generate 4 X 4 edges" <|
+        , test "Generate 4 X 4 squares" <|
             \() ->
                 Expect.equal (List.length <| Main.generateSquares 4) 16
         ]

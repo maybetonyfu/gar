@@ -14,8 +14,8 @@ type alias Model =
     }
 
 
-type alias Edge =
-    ( Point, Point )
+type alias Line =
+    Set.Set Point
 
 
 type alias Square =
@@ -51,21 +51,21 @@ update msg model =
             )
 
 
-generateLines : Int -> List Edge
+generateLines : Int -> List Line
 generateLines dimension =
     generatePoints dimension
         |> foldl
-            (\point edges ->
-                point => getBottomPoint point :: point => getRightPoint point :: edges
+            (\point lines ->
+                Set.fromList [ point, getBottomPoint point ] :: Set.fromList [ point, getRightPoint point ] :: lines
             )
             []
-        |> filter (\edge -> (isInRange dimension <| first edge) && (isInRange dimension <| second edge))
+        |> filter (lineInRange (dimension))
 
 
 generateSquares : Int -> List Square
 generateSquares dimension =
     generatePoints dimension
-        |> filter (isInRange <| dimension - 1)
+        |> filter (pointInRange <| dimension - 1)
         |> foldl
             (\point squares ->
                 (Set.fromList
@@ -80,9 +80,15 @@ generateSquares dimension =
             []
 
 
-isInRange : Int -> Point -> Bool
-isInRange dimension point =
+pointInRange : Int -> Point -> Bool
+pointInRange dimension point =
     first point <= dimension + 1 && second point <= dimension + 1
+
+
+lineInRange : Int -> Line -> Bool
+lineInRange maxiumLineCoordinate line =
+    Set.toList line
+        |> List.all (pointInRange maxiumLineCoordinate)
 
 
 getRightPoint : Point -> Point
