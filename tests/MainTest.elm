@@ -3,6 +3,7 @@ module MainTest exposing (..)
 import Expect exposing (Expectation)
 import Test exposing (..)
 import Main exposing (..)
+import Set
 
 
 generatePoints : Test
@@ -26,6 +27,11 @@ generateLines =
         , test "Generate 4 X 4 lines" <|
             \() ->
                 Expect.equal (List.length <| Main.generateLines 4) 40
+        , test "Every line has exactly 2 points" <|
+            \() ->
+                Main.generateLines 3
+                    |> List.all (\line -> (Set.size line) == 2)
+                    |> Expect.true "Expect size == 2 to be true"
         ]
 
 
@@ -38,4 +44,9 @@ generateSquares =
         , test "Generate 4 X 4 squares" <|
             \() ->
                 Expect.equal (List.length <| Main.generateSquares 4) 16
+        , test "Every square has exactly 4 points" <|
+            \() ->
+                Main.generateSquares 3
+                    |> List.all (\square -> (Set.size square) == 4)
+                    |> Expect.true "Expect size == 4 to be true"
         ]
