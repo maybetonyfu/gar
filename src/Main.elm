@@ -6,6 +6,7 @@ import Html.Events exposing (onClick)
 import List.Extra exposing (lift2)
 import List exposing (..)
 import Tuple exposing (..)
+import Set
 
 
 type alias Model =
@@ -15,6 +16,10 @@ type alias Model =
 
 type alias Edge =
     ( Point, Point )
+
+
+type alias Square =
+    Set.Set Point
 
 
 type Msg
@@ -57,6 +62,24 @@ generateLines dimension =
         |> filter (\edge -> (isInRange dimension <| first edge) && (isInRange dimension <| second edge))
 
 
+generateSquares : Int -> List Square
+generateSquares dimension =
+    generatePoints dimension
+        |> filter (isInRange <| dimension - 1)
+        |> foldl
+            (\point squares ->
+                (Set.fromList
+                    [ point
+                    , getRightPoint point
+                    , getBottomPoint point
+                    , getBottomRightPoint point
+                    ]
+                )
+                    :: squares
+            )
+            []
+
+
 isInRange : Int -> Point -> Bool
 isInRange dimension point =
     first point <= dimension + 1 && second point <= dimension + 1
@@ -70,6 +93,11 @@ getRightPoint point =
 getBottomPoint : Point -> Point
 getBottomPoint point =
     first point => (second point + 1)
+
+
+getBottomRightPoint : Point -> Point
+getBottomRightPoint point =
+    (first point + 1) => (second point + 1)
 
 
 generatePoints : Int -> List Point

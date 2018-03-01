@@ -29,14 +29,13 @@ generateLines =
         ]
 
 
-
--- generateSquares : Test
--- generateSquares =
---     describe "Generate edges from given dimension"
---         [ test "Generate 3 X 3 edges" <|
---             \() ->
---                 Expect.equal (List.length <| Main.generateSquares 3) 9
---         , test "Generate 4 X 4 edges" <|
---             \() ->
---                 Expect.equal (List.length <| Main.generateSquares 4) 16
---         ]
+generateSquares : Test
+generateSquares =
+    describe "Generate squares from given dimension"
+        [ test "Generate 3 X 3 edges" <|
+            \() ->
+                Expect.equal (List.length <| Main.generateSquares 3) 9
+        , test "Generate 4 X 4 edges" <|
+            \() ->
+                Expect.equal (List.length <| Main.generateSquares 4) 16
+        ]
