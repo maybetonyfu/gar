@@ -64,7 +64,7 @@ generateLines dimension =
             dimension
     in
         generatePoints dimension
-            |> foldl
+            |> List.foldl
                 (\point lines ->
                     Set.fromList [ point, getBottomPoint point ]
                         :: Set.fromList [ point, getRightPoint point ]
@@ -82,7 +82,7 @@ generateSquares dimension =
     in
         generatePoints dimension
             |> List.filter (pointInRange <| maxTopLeftCornerCoordinate)
-            |> foldl
+            |> List.foldl
                 (\point squares ->
                     (Set.fromList
                         [ point
@@ -98,7 +98,7 @@ generateSquares dimension =
 
 pointInRange : Int -> Point -> Bool
 pointInRange maxPoinCoordinate point =
-    first point <= maxPoinCoordinate && second point <= maxPoinCoordinate
+    Tuple.first point <= maxPoinCoordinate && Tuple.second point <= maxPoinCoordinate
 
 
 lineInRange : Int -> Line -> Bool
@@ -109,17 +109,17 @@ lineInRange maxiumLineCoordinate line =
 
 getRightPoint : Point -> Point
 getRightPoint point =
-    (first point + 1) => second point
+    (Tuple.first point + 1) => Tuple.second point
 
 
 getBottomPoint : Point -> Point
 getBottomPoint point =
-    first point => (second point + 1)
+    Tuple.first point => (Tuple.second point + 1)
 
 
 getBottomRightPoint : Point -> Point
 getBottomRightPoint point =
-    (first point + 1) => (second point + 1)
+    (Tuple.first point + 1) => (Tuple.second point + 1)
 
 
 generatePoints : Int -> List Point
@@ -140,10 +140,10 @@ view model =
         , svg
             [ Svg.Attributes.width "500"
             , Svg.Attributes.height "500"
-            , viewBox "0 0 120 120"
-            , fill "white"
-            , stroke "black"
-            , strokeWidth "3"
+            , Svg.Attributes.viewBox "0 0 120 120"
+            , Svg.Attributes.fill "white"
+            , Svg.Attributes.stroke "black"
+            , Svg.Attributes.strokeWidth "3"
             , Html.Attributes.style [ "padding-left" => "20px" ]
             ]
             []
