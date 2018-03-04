@@ -1,7 +1,7 @@
 module Main exposing (..)
 
 import Html exposing (..)
-import Html.Attributes exposing (..)
+import Html.Attributes exposing (style)
 import Html.Events exposing (onClick)
 import List.Extra exposing (lift2)
 import List exposing (..)
@@ -134,20 +134,37 @@ generatePoints dimension =
 view : Model -> Html Msg
 view model =
     div []
-        [ button [ onClick <| Draw 3 ] [ Html.text "3 X 3" ]
-        , button [ onClick <| Draw 4 ] [ Html.text "4 X 4" ]
-        , hr [] []
+        [ button [ onClick (Draw 3) ]
+            [ Html.text "3 X 3" ]
+        , button
+            [ onClick (Draw 4) ]
+            [ Html.text "4 X 4" ]
         , svg
-            [ Svg.Attributes.width "500"
-            , Svg.Attributes.height "500"
-            , Svg.Attributes.viewBox "0 0 120 120"
-            , Svg.Attributes.fill "white"
-            , Svg.Attributes.stroke "black"
-            , Svg.Attributes.strokeWidth "3"
+            [ width "500"
+            , height "500"
+            , viewBox "0 0 120 120"
+            , fill "white"
+            , stroke "black"
+            , strokeWidth "3"
             , Html.Attributes.style [ "padding-left" => "20px" ]
             ]
-            []
+            (List.map
+                pointToSvg
+                model.points
+            )
         ]
+
+
+pointToSvg : Point -> Html Msg
+pointToSvg point =
+    let
+        toLeft =
+            10 + (first point) * 20
+
+        toTop =
+            10 + (second point) * 20
+    in
+        circle [ cx <| toString toLeft, cy <| toString toTop, r "3", stroke "none", fill "#663399" ] []
 
 
 subscriptions : Model -> Sub Msg
