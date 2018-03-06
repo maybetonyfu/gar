@@ -8,6 +8,7 @@ import List exposing (..)
 import Tuple exposing (..)
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
+import Set exposing (..)
 
 
 type alias Model =
@@ -161,6 +162,22 @@ pointToSvg point =
             10 + (second point) * 20
     in
         circle [ cx <| toString toLeft, cy <| toString toTop, r "3", stroke "none", fill "#663399" ] []
+
+
+isLineHorizontal : Line -> Bool
+isLineHorizontal line =
+    List.map first line
+        |> Set.fromList
+        |> Set.size
+        |> (==) 1
+
+
+isLineVertical : Line -> Bool
+isLineVertical line =
+    List.map second line
+        |> Set.fromList
+        |> Set.size
+        |> (==) 1
 
 
 subscriptions : Model -> Sub Msg

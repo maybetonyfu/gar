@@ -3,7 +3,6 @@ module MainTest exposing (..)
 import Expect exposing (Expectation)
 import Test exposing (..)
 import Main exposing (..)
-import Set
 
 
 generatePoints : Test
@@ -32,6 +31,18 @@ generateLines =
                 Main.generateLines 3
                     |> List.all (\line -> (List.length line) == 2)
                     |> Expect.true "Expect size == 2 to be true"
+        , test "Check whether line is horizontal" <|
+            \() ->
+                Main.isLineHorizontal [ ( 0, 0 ), ( 0, 1 ) ] |> Expect.true "Line is indeed horizontal"
+        , test "Check whether line is not horizontal" <|
+            \() ->
+                Main.isLineHorizontal [ ( 0, 0 ), ( 1, 1 ) ] |> Expect.false "Line is not horizontal"
+        , test "Check whether line is vertical" <|
+            \() ->
+                Main.isLineVertical [ ( 0, 0 ), ( 1, 0 ) ] |> Expect.true "Line is indeed vertical"
+        , test "Check whether line is not vertical" <|
+            \() ->
+                Main.isLineVertical [ ( 0, 0 ), ( 1, 1 ) ] |> Expect.false "Line is not vertical"
         ]
 
 
