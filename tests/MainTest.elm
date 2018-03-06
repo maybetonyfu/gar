@@ -30,7 +30,7 @@ generateLines =
         , test "Every line has exactly 2 points" <|
             \() ->
                 Main.generateLines 3
-                    |> List.all (\line -> (Set.size line) == 2)
+                    |> List.all (\line -> (List.length line) == 2)
                     |> Expect.true "Expect size == 2 to be true"
         ]
 
@@ -47,6 +47,6 @@ generateSquares =
         , test "Every square has exactly 4 points" <|
             \() ->
                 Main.generateSquares 3
-                    |> List.all (\square -> (Set.size square) == 4)
+                    |> List.all (\square -> (List.length square) == 4)
                     |> Expect.true "Expect size == 4 to be true"
         ]

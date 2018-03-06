@@ -6,7 +6,6 @@ import Html.Events exposing (onClick)
 import List.Extra exposing (lift2)
 import List exposing (..)
 import Tuple exposing (..)
-import Set
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
 
@@ -19,11 +18,11 @@ type alias Model =
 
 
 type alias Line =
-    Set.Set Point
+    List Point
 
 
 type alias Square =
-    Set.Set Point
+    List Point
 
 
 type Msg
@@ -66,8 +65,8 @@ generateLines dimension =
         generatePoints dimension
             |> List.foldl
                 (\point lines ->
-                    Set.fromList [ point, getBottomPoint point ]
-                        :: Set.fromList [ point, getRightPoint point ]
+                    [ point, getBottomPoint point ]
+                        :: [ point, getRightPoint point ]
                         :: lines
                 )
                 []
@@ -84,13 +83,11 @@ generateSquares dimension =
             |> List.filter (pointInRange <| maxTopLeftCornerCoordinate)
             |> List.foldl
                 (\point squares ->
-                    (Set.fromList
-                        [ point
-                        , getRightPoint point
-                        , getBottomPoint point
-                        , getBottomRightPoint point
-                        ]
-                    )
+                    [ point
+                    , getRightPoint point
+                    , getBottomPoint point
+                    , getBottomRightPoint point
+                    ]
                         :: squares
                 )
                 []
@@ -103,8 +100,7 @@ pointInRange maxPoinCoordinate point =
 
 lineInRange : Int -> Line -> Bool
 lineInRange maxiumLineCoordinate line =
-    Set.toList line
-        |> List.all (pointInRange maxiumLineCoordinate)
+    List.all (pointInRange maxiumLineCoordinate) line
 
 
 getRightPoint : Point -> Point
