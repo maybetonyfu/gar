@@ -34,11 +34,6 @@ type alias Point =
     ( Int, Int )
 
 
-(=>) : a -> b -> ( a, b )
-(=>) =
-    (,)
-
-
 init : ( Model, Cmd msg )
 init =
     ( Model [] [] [], Cmd.none )
@@ -106,17 +101,17 @@ lineInRange maxiumLineCoordinate line =
 
 getRightPoint : Point -> Point
 getRightPoint point =
-    (Tuple.first point + 1) => Tuple.second point
+    ( (Tuple.first point + 1), Tuple.second point )
 
 
 getBottomPoint : Point -> Point
 getBottomPoint point =
-    Tuple.first point => (Tuple.second point + 1)
+    ( Tuple.first point, (Tuple.second point + 1) )
 
 
 getBottomRightPoint : Point -> Point
 getBottomRightPoint point =
-    (Tuple.first point + 1) => (Tuple.second point + 1)
+    ( (Tuple.first point + 1), (Tuple.second point + 1) )
 
 
 generatePoints : Int -> List Point
@@ -143,7 +138,7 @@ view model =
             , fill "white"
             , stroke "black"
             , strokeWidth "3"
-            , Html.Attributes.style [ "padding-left" => "20px" ]
+            , Html.Attributes.style [ ( "padding-left", "20px" ) ]
             ]
             (List.map
                 pointToSvg
