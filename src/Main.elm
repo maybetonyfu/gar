@@ -55,6 +55,7 @@ update msg model =
 generateLines : Int -> List Line
 generateLines dimension =
     let
+        maxLineCoordinate : Int
         maxLineCoordinate =
             dimension
     in
@@ -72,6 +73,7 @@ generateLines dimension =
 generateSquares : Int -> List Square
 generateSquares dimension =
     let
+        maxTopLeftCornerCoordinate : Int
         maxTopLeftCornerCoordinate =
             dimension - 1
     in
@@ -117,6 +119,7 @@ getBottomRightPoint point =
 generatePoints : Int -> List Point
 generatePoints dimension =
     let
+        maxPointCoordinate : Int
         maxPointCoordinate =
             dimension
     in
@@ -140,9 +143,10 @@ view model =
             , strokeWidth "3"
             , Html.Attributes.style [ ( "padding-left", "20px" ) ]
             ]
-            (List.map
-                pointToSvg
-                model.points
+            (List.concat
+                [ List.map pointToSvg model.points
+                , List.map lineToSvg model.lines
+                ]
             )
         ]
 
@@ -150,13 +154,47 @@ view model =
 pointToSvg : Point -> Html Msg
 pointToSvg point =
     let
+        toLeft : Int
         toLeft =
             10 + (first point) * 20
 
+        toTop : Int
         toTop =
             10 + (second point) * 20
     in
         circle [ cx <| toString toLeft, cy <| toString toTop, r "3", stroke "none", fill "#663399" ] []
+
+
+lineToSvg : Line -> Html Msg
+lineToSvg line =
+    let
+        lineLength : Int
+        lineLength =
+            30
+
+        xLeft : Line -> Int
+        xLeft line =
+            List.map second line |> List.minimum |> Maybe.withDefault 0 |> (*) lineLength
+
+        xRight : Line -> Int
+        xRight line =
+            List.map second line |> List.maximum |> Maybe.withDefault 0 |> (*) lineLength
+
+        yTop : Line -> Int
+        yTop line =
+            List.map first line |> List.minimum |> Maybe.withDefault 0 |> (*) lineLength
+
+        yBottom : Line -> Int
+        yBottom line =
+            List.map first line |> List.maximum |> Maybe.withDefault 0 |> (*) lineLength
+    in
+        Svg.line
+            [ x1 <| toString <| xLeft line
+            , x2 <| toString <| xRight line
+            , y1 <| toString <| yTop line
+            , y2 <| toString <| yBottom line
+            ]
+            []
 
 
 isLineHorizontal : Line -> Bool
