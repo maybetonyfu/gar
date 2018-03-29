@@ -144,8 +144,8 @@ view model =
             , Html.Attributes.style [ ( "padding-left", "20px" ) ]
             ]
             (List.concat
-                [ List.map pointToSvg model.points
-                , List.map lineToSvg model.lines
+                [ List.map lineToSvg model.lines
+                , List.map pointToSvg model.points
                 ]
             )
         ]
@@ -165,34 +165,74 @@ pointToSvg point =
         circle [ cx <| toString toLeft, cy <| toString toTop, r "3", stroke "none", fill "#663399" ] []
 
 
+getLeftMostX : List Point -> Int
+getLeftMostX list =
+    List.map first list
+        |> List.minimum
+        |> Maybe.withDefault 0
+
+
+getRightMostX : List Point -> Int
+getRightMostX list =
+    List.map first list
+        |> List.maximum
+        |> Maybe.withDefault 0
+
+
+getTopMostY : List Point -> Int
+getTopMostY list =
+    List.map second list
+        |> List.minimum
+        |> Maybe.withDefault 0
+
+
+getBottomMostY : List Point -> Int
+getBottomMostY list =
+    List.map second list
+        |> List.maximum
+        |> Maybe.withDefault 0
+
+
 lineToSvg : Line -> Html Msg
 lineToSvg line =
     let
+        padLeft : Int
+        padLeft =
+            10
+
         lineLength : Int
         lineLength =
-            30
+            20
+
+        getScreenPosition : Int -> Int
+        getScreenPosition coordinate =
+            coordinate * lineLength + padLeft
 
         xLeft : Line -> Int
         xLeft line =
-            List.map second line |> List.minimum |> Maybe.withDefault 0 |> (*) lineLength
+            getLeftMostX line
+                |> getScreenPosition
 
         xRight : Line -> Int
         xRight line =
-            List.map second line |> List.maximum |> Maybe.withDefault 0 |> (*) lineLength
+            getRightMostX line
+                |> getScreenPosition
 
         yTop : Line -> Int
         yTop line =
-            List.map first line |> List.minimum |> Maybe.withDefault 0 |> (*) lineLength
+            getTopMostY line
+                |> getScreenPosition
 
         yBottom : Line -> Int
         yBottom line =
-            List.map first line |> List.maximum |> Maybe.withDefault 0 |> (*) lineLength
+            getBottomMostY line
+                |> getScreenPosition
     in
         Svg.line
-            [ x1 <| toString <| xLeft line
-            , x2 <| toString <| xRight line
-            , y1 <| toString <| yTop line
-            , y2 <| toString <| yBottom line
+            [ xLeft line |> toString |> x1
+            , xRight line |> toString |> x2
+            , yTop line |> toString |> y1
+            , yBottom line |> toString |> y2
             ]
             []
 
