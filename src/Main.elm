@@ -78,7 +78,7 @@ generateSquares dimension =
             dimension - 1
     in
         generatePoints dimension
-            |> List.filter (pointInRange <| maxTopLeftCornerCoordinate)
+            |> List.filter (pointInRange maxTopLeftCornerCoordinate)
             |> List.foldl
                 (\point squares ->
                     [ point
@@ -162,7 +162,7 @@ pointToSvg point =
         toTop =
             10 + (second point) * 20
     in
-        circle [ cx <| toString toLeft, cy <| toString toTop, r "3", stroke "none", fill "#663399" ] []
+        circle [ toString toLeft |> cx, toString toTop |> cy, r "3", stroke "none", fill "#663399" ] []
 
 
 getLeftMostX : List Point -> Int
@@ -210,23 +210,19 @@ lineToSvg line =
 
         xLeft : Line -> Int
         xLeft line =
-            getLeftMostX line
-                |> getScreenPosition
+            getLeftMostX line |> getScreenPosition
 
         xRight : Line -> Int
         xRight line =
-            getRightMostX line
-                |> getScreenPosition
+            getRightMostX line |> getScreenPosition
 
         yTop : Line -> Int
         yTop line =
-            getTopMostY line
-                |> getScreenPosition
+            getTopMostY line |> getScreenPosition
 
         yBottom : Line -> Int
         yBottom line =
-            getBottomMostY line
-                |> getScreenPosition
+            getBottomMostY line |> getScreenPosition
     in
         Svg.line
             [ xLeft line |> toString |> x1
