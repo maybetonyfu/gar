@@ -144,7 +144,8 @@ view model =
             , Html.Attributes.style [ ( "padding-left", "20px" ) ]
             ]
             (List.concat
-                [ List.map lineToSvg model.lines
+                [ List.map squareToSvg model.squares
+                , List.map lineToSvg model.lines
                 , List.map pointToSvg model.points
                 ]
             )
@@ -229,6 +230,28 @@ lineToSvg line =
             , xRight line |> toString |> x2
             , yTop line |> toString |> y1
             , yBottom line |> toString |> y2
+            ]
+            []
+
+
+squareToSvg : Square -> Html Msg
+squareToSvg square =
+    let
+        padLeft : Int
+        padLeft =
+            10
+
+        squareSize : Int
+        squareSize =
+            20
+    in
+        Svg.rect
+            [ getLeftMostX square |> (*) squareSize |> (+) padLeft |> toString |> x
+            , getTopMostY square |> (*) squareSize |> (+) padLeft |> toString |> y
+            , toString squareSize |> width
+            , toString squareSize |> height
+            , stroke "none"
+            , fill "#663399"
             ]
             []
 
